@@ -8,41 +8,35 @@ namespace Lesson11Timer
 {
     public sealed class Whatcher
     {
-        public EventHandler WhatcherEvent;
+
         public void AddClock(Clock clock)
         {
             clock.ClockEvent += ClockReceivedEvent;
         }
 
-        private void ClockReceivedEvent(object? sender, EventArgs e)
+        private void ClockReceivedEvent(object? sender, string e)
         {
-            WhatcherEvent.Invoke(this, EventArgs.Empty);
+            Console.WriteLine(e);
         }
 
     }
 
     public sealed class Clock
     {
-        public EventHandler ClockEvent;
-        public int timeTimer;
-        public void AddWhatcher(Whatcher whatcher)
-        {
-            whatcher.WhatcherEvent += WhatcherReceivedEvent;
-        }
+        public EventHandler<string> ClockEvent;
 
-        private void WhatcherReceivedEvent(object? sender, EventArgs e)
+        public void StartClock(int timeTimer)
         {
-            --timeTimer;
-            if (timeTimer == 0)
+            while (timeTimer > 0)
             {
-                Console.WriteLine("Time is over");
-                return;
+                Console.WriteLine();
+                Thread.Sleep(1000);
+                Console.Clear();
+                ClockEvent.Invoke(this, $"Timer: {timeTimer}");
+                timeTimer--;
             }
-            
-            Console.WriteLine($"Timer: {timeTimer}");
-            Thread.Sleep(1000);
             Console.Clear();
-            ClockEvent.Invoke(this, EventArgs.Empty);
+            ClockEvent.Invoke(this, $"Time is over");
         }
     }
 
